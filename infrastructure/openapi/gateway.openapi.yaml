@@ -1,0 +1,56 @@
+# Minimal OpenAPI sample for gateway-required endpoints.
+openapi: 3.1.0
+info:
+  title: RealEstate Intelligence Suite API
+  version: 0.1.0
+servers:
+  - url: http://localhost:8000
+paths:
+  /api/listings:
+    post:
+      summary: Create property listing
+      responses:
+        '200':
+          description: Listing created
+  /api/ai/estimate-price:
+    post:
+      summary: Estimate fair market price
+      responses:
+        '200':
+          description: Price estimate with confidence
+  /api/ai/check-fraud:
+    post:
+      summary: Run fraud and anomaly checks
+      responses:
+        '200':
+          description: Fraud risk report
+  /api/agents/{agentId}/trust-score:
+    get:
+      summary: Get trust score for agent
+      parameters:
+        - in: path
+          name: agentId
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Trust score response
+  /api/insights:
+    get:
+      summary: Get market insights dashboard data
+      responses:
+        '200':
+          description: Insights payload
+  /api/search:
+    get:
+      summary: Semantic listing search
+      parameters:
+        - in: query
+          name: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Search results

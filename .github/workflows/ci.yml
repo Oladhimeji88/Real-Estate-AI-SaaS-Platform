@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  backend-lint-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service:
+          - auth-service
+          - listings-service
+          - ai-service
+          - trust-service
+          - insights-service
+          - search-service
+          - notifications-service
+          - api-gateway
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install deps
+        run: |
+          pip install -r services/${{ matrix.service }}/requirements.txt
+      - name: Smoke import
+        run: |
+          python -c "import importlib.util; spec = importlib.util.spec_from_file_location('main', 'services/${{ matrix.service }}/app/main.py'); m = importlib.util.module_from_spec(spec); spec.loader.exec_module(m); print('ok')"
+
+  frontend-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Install + build
+        working-directory: frontend
+        run: |
+          npm install
+          npm run build
